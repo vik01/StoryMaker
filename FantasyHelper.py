@@ -1,0 +1,2 @@
+class FantasyHelper():
+    pass

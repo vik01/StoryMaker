@@ -1,2 +1,5 @@
 # Environments
 .venv/
+
+# Variables
+.env
