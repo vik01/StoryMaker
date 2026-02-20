@@ -3,3 +3,11 @@
 
 # Variables
 .env
+
+# Testing Area
+testing_area.ipynb
+
+# Additional files to ignore
+__pycache__/
+*.pyc
+uv.lock
