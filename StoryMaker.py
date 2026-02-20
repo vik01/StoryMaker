@@ -25,7 +25,7 @@ class StoryMaker:
     
     # Models to use and fallbacks
     main_model = "arcee-ai/trinity-large-preview:free"
-    fallback_models = ["deepseek/deepseek-r1-0528:free", "meta-llama/llama-3.3-70b-instruct:free"]
+    __fallback_models = ["deepseek/deepseek-r1-0528:free", "meta-llama/llama-3.3-70b-instruct:free"]
 
     # system and prompts
     basic_prompt = "Write a one paragraph story about a hero who goes on a journey, meets alies, gets stronger, finds weapons and treasure, and defeats the demon king."
@@ -38,32 +38,39 @@ class StoryMaker:
 
     def __init__(self, system_prompt:str=""):
         """
-        Initializes the StoryMaker with an HTTP client and default settings.
+        Initializes the StoryMaker with default settings.
+
+        The HTTP client is not created here. It is created lazily the first time
+        generate() is called.
 
         Args:
             system_prompt (str): A custom system prompt to guide the model's behavior.
                 If left empty, the default storytelling prompt is used.
         """
-        self.client = OpenAI(base_url=self.url, api_key=open_ai_key)
 
         # make sure some values are set.
         self.temp = 1
         self.max_tokens = 1000
         self.stream_result = False
-        self.preserve_convo = []
+        self.__preserve_convo = []
 
         if system_prompt == "":
-            self.preserve_convo.append({
+            self.__preserve_convo.append({
                     "role": "system", 
                     "content": self.init_sys_prompt
                 }
             )
         else:
-            self.preserve_convo.append({
+            self.__preserve_convo.append({
                     "role": "system", 
                     "content": system_prompt
                 }
             )
+
+
+    def __create_client(self):
+        """Creates and assigns the OpenAI HTTP client. Called lazily by generate()."""
+        self.client = OpenAI(base_url=self.url, api_key=open_ai_key)
 
 
     def __chat(self):
@@ -78,9 +85,9 @@ class StoryMaker:
         """
         response = self.client.chat.completions.create(
             model=self.main_model, 
-            messages=self.preserve_convo,
+            messages=self.__preserve_convo,
             extra_body={
-                "models": self.fallback_models
+                "models": self.__fallback_models
             },
             max_tokens=self.max_tokens,
             stream=self.stream_result,
@@ -97,7 +104,7 @@ class StoryMaker:
                     print(content, end="", flush=True)
             print()
             
-            self.preserve_convo.append({
+            self.__preserve_convo.append({
                     "role": "assistant", 
                     "content": complete_response,
                 }
@@ -105,7 +112,7 @@ class StoryMaker:
             return complete_response
 
         else:
-            self.preserve_convo.append({
+            self.__preserve_convo.append({
                     "role": "assistant", 
                     "content": response.choices[0].message.content,
                 }
@@ -117,6 +124,8 @@ class StoryMaker:
         """
         Generates a story from the model using a user-provided or default prompt.
 
+        Creates the HTTP client on first call if it does not already exist.
+
         Args:
             prompt (str): The story prompt to send to the model. If empty, the
                 default basic_prompt is used.
@@ -124,12 +133,16 @@ class StoryMaker:
         Returns:
             str: The generated story text.
         """
+        
+        if not hasattr(self, 'client'):
+            self.__create_client()
+        
         # Initialize the prompt.
         if prompt == "":
             message = {"role": "user", "content": self.basic_prompt}
         else:
             message = {"role": "user", "content": prompt}
-        self.preserve_convo.append(message)
+        self.__preserve_convo.append(message)
         
         # chat with the model.
         model_response = self.__chat()
@@ -154,19 +167,45 @@ class StoryMaker:
         Raises:
             Exception: If generate() has not been called first.
         """
-        if len(self.preserve_convo) == 1:
+        if len(self.__preserve_convo) == 1:
             raise ValueError("Error: You need to run `generate()` first to get a basic story. Then run `update()` again to make updates to it.")
 
         # Make the message
         message = {"role":"user", "content": "Update the story you have created with the following parameters:\n"}
         for key, value in kwargs.items():
             message["content"] += f"{key}: {value}\n"
-        self.preserve_convo.append(message)
+        self.__preserve_convo.append(message)
         
         # chat with the model.
         model_response = self.__chat()
 
         return model_response
+
+
+    def get_convo_history(self, pretty:bool=False):
+        """
+        Returns the current conversation history.
+
+        Args:
+            pretty (bool): If False, returns a copy of the raw list of message
+                dictionaries. If True, returns a human-readable formatted string
+                with each message separated by a divider line.
+
+        Returns:
+            list[dict] | str: The conversation history as a list of dicts when
+                pretty=False, or a formatted string when pretty=True.
+        """
+        if not pretty:
+            return list(self.__preserve_convo)
+
+        divider = "------------------------------------------"
+        result = ""
+        for message in self.__preserve_convo:
+            result += f"{divider}\n"
+            result += f"role: {message['role']}\n"
+            result += f"content: {message['content']}\n"
+        result += divider
+        return result
 
 
     def turn_off_streaming(self):
@@ -199,24 +238,43 @@ class StoryMaker:
         """
         self.max_tokens = new_max_tokens
 
+
     def close(self):
-        """Explicitly closes the underlying HTTP client and releases its connections."""
-        self.client.close()
+        """Explicitly closes the underlying HTTP client and releases its connections.
+
+        Does nothing if the client was never created.
+        """
+        if hasattr(self, 'client'):
+            self.client.close()
     
+
     def __del__(self):
         """Safety net to close the HTTP client when the object is garbage collected."""
-        self.client.close()
+        if hasattr(self, 'client'):
+            self.client.close()
+
 
     def __enter__(self):
         """Enables use as a context manager. Returns the StoryMaker instance."""
         return self
 
+
     def __exit__(self, _exc_type, _exc_val, _exc_tb):
-        """Closes the HTTP client when exiting a context manager block."""
-        self.client.close()
+        """Closes the HTTP client when exiting a context manager block.
+
+        Does nothing if the client was never created.
+        """
+        if hasattr(self, 'client'):
+            self.client.close()
+
 
     @classmethod
-    def create_story_prompt(cls, prompt:str="", **kwargs):
+    def create_story_prompt(cls, 
+                            setting:str="A fantasy lands with humans, dwarves, elves, dragons, and magic. Similar to LOTR, GOT, and more.",
+                            theme:str="A triamph of good over evil",
+                            pov:str="third person narrator", 
+                            conflict:str="",
+                            **kwargs):
         message = [{"role": "system", "content": cls.init_sys_prompt}, {"role": "user","content": ""}]
         cls.__chat()
         pass
@@ -244,6 +302,6 @@ class StoryMaker:
     def get_fallback_model(cls):
         """Returns a numbered list of fallback models as a formatted string."""
         fallback_str = "The following are fallback models in case the main model doesn't work:\n"
-        for index, model in enumerate(cls.fallback_models):
+        for index, model in enumerate(cls.__fallback_models):
             fallback_str += f"({index}) {model}, \n"
         return fallback_str

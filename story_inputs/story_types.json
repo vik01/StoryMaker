@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "characters": {
+      "protagonist": "The Reluctant Hero",
+      "description": "An ordinary person thrust into extraordinary circumstances who initially resists the call to action."
+    },
+    "setting": "Fantasy",
+    "plot": "A humble farmer discovers they possess ancient magic that could save the kingdom from a dark sorcerer. They must journey across treacherous lands to master their power. Along the way, they gather unlikely allies and confront their deepest fears.",
+    "conflict": "Person vs. Evil / External Force",
+    "theme": "Good triumphs over evil",
+    "point_of_view": "Third-person (narrator)"
+  },
+  {
+    "id": 2,
+    "characters": {
+      "protagonist": "The Anti-Hero",
+      "description": "A morally ambiguous character who does the right thing for the wrong reasons, or the wrong thing for the right reasons."
+    },
+    "setting": "Dystopian / Futuristic",
+    "plot": "A smuggler operating in a totalitarian regime is forced to transport a child who holds the key to overthrowing the government. As bounty hunters close in, the smuggler must decide between self-preservation and sacrifice. The lines between criminal and savior blur with every choice.",
+    "conflict": "Person vs. Society",
+    "theme": "Morally questionable choices and the gray area between right and wrong",
+    "point_of_view": "First-person"
+  },
+  {
+    "id": 3,
+    "characters": {
+      "protagonist": "The Tortured Genius",
+      "description": "A brilliant but deeply flawed individual whose intellect is both their greatest gift and their deepest curse."
+    },
+    "setting": "Historical (Victorian Era)",
+    "plot": "A gifted inventor in 1880s London creates a machine that can predict crimes before they happen. As the police grow dependent on the device, its predictions begin to unravel the inventor's own dark past. They must choose between destroying their life's work or letting it destroy others.",
+    "conflict": "Person vs. Self (Internal Strife)",
+    "theme": "The cost of knowledge and the burden of genius",
+    "point_of_view": "First-person"
+  },
+  {
+    "id": 4,
+    "characters": {
+      "protagonist": "The Chosen One",
+      "description": "A character prophesied or destined to fulfill a great purpose, often unaware of their significance at the start."
+    },
+    "setting": "Sci-Fi (Space Opera)",
+    "plot": "A young navigator on a cargo vessel receives a cryptic signal from a dying star that only they can decode. The message reveals an alien civilization about to make first contact—or launch an invasion. With galactic governments paralyzed by fear, the navigator must bridge two species before war erupts.",
+    "conflict": "Person vs. the Unknown",
+    "theme": "Unity and understanding across differences",
+    "point_of_view": "Third-person (narrator)"
+  },
+  {
+    "id": 5,
+    "characters": {
+      "protagonist": "The Survivor",
+      "description": "A resourceful, enduring character whose primary drive is staying alive against overwhelming odds."
+    },
+    "setting": "Post-Apocalyptic / Zombie",
+    "plot": "Three years after a fungal outbreak turned most of humanity into feral creatures, a lone survivor picks up a radio transmission from a supposed safe zone across the country. The journey forces them into alliances with strangers who each carry dangerous secrets. As they near the destination, they discover the safe zone may not be what it promises.",
+    "conflict": "Person vs. Nature / Environment",
+    "theme": "The will to survive and what makes life worth living",
+    "point_of_view": "First-person"
+  },
+  {
+    "id": 6,
+    "characters": {
+      "protagonist": "The Mentor",
+      "description": "A wise, experienced guide who helps others on their journey, often carrying regrets or unfinished business of their own."
+    },
+    "setting": "Fantasy",
+    "plot": "An aging wizard who failed to stop a great calamity decades ago takes on a new apprentice with raw, unstable power. As history threatens to repeat itself, the mentor must confront their past failures while preparing someone else to succeed where they couldn't. The apprentice's growing power forces a final reckoning.",
+    "conflict": "Person vs. Self (Internal Strife)",
+    "theme": "Redemption and passing the torch to the next generation",
+    "point_of_view": "Third-person (narrator)"
+  },
+  {
+    "id": 7,
+    "characters": {
+      "protagonist": "The Outcast",
+      "description": "A marginalized or rejected individual who exists on the fringes of society, seeking acceptance or purpose."
+    },
+    "setting": "Historical (1920s America)",
+    "plot": "A mixed-race jazz musician in Harlem navigates the explosive energy of the Renaissance era while hiding their identity to perform in whites-only clubs. When a powerful music producer offers fame in exchange for erasing their heritage, they must decide what they are willing to sacrifice. A rivalry with another musician raises the stakes to a breaking point.",
+    "conflict": "Person vs. Society",
+    "theme": "Identity, belonging, and the price of assimilation",
+    "point_of_view": "First-person"
+  },
+  {
+    "id": 8,
+    "characters": {
+      "protagonist": "The Villain Turned Reluctant Ally",
+      "description": "A former antagonist forced by circumstances to work alongside those they once opposed."
+    },
+    "setting": "Dystopian / Futuristic",
+    "plot": "A disgraced corporate enforcer who once crushed rebellions is abandoned by the regime after a failed mission. Hunted by their former masters and despised by the resistance, they must prove their loyalty to the very people they oppressed. A greater existential threat forces both sides into an uneasy alliance.",
+    "conflict": "Person vs. Self (Internal Strife) and Person vs. Society",
+    "theme": "Redemption is earned through action, not words",
+    "point_of_view": "Third-person (narrator)"
+  },
+  {
+    "id": 9,
+    "characters": {
+      "protagonist": "The Trickster",
+      "description": "A cunning, charismatic character who relies on wit, deception, and charm rather than brute force."
+    },
+    "setting": "Sci-Fi (Space Opera)",
+    "plot": "A con artist posing as a diplomat accidentally brokers a real peace treaty between two warring alien factions. When both sides discover the deception, the trickster must use every scheme in their arsenal to keep the peace from collapsing. The ultimate con becomes telling the truth for the first time.",
+    "conflict": "Person vs. Person (Rival Factions)",
+    "theme": "Authenticity and the masks we wear",
+    "point_of_view": "First-person"
+  },
+  {
+    "id": 10,
+    "characters": {
+      "protagonist": "The Innocent",
+      "description": "A pure-hearted, naive character whose worldview is challenged as they encounter the harsh realities of the world."
+    },
+    "setting": "Post-Apocalyptic / Zombie",
+    "plot": "A child born after the collapse has only known the walled settlement they call home. When the walls are breached and their community scatters, the child journeys through the ruins of the old world guided only by a tattered picture book of how life used to be. What they find challenges every story the elders ever told.",
+    "conflict": "Person vs. the Unknown",
+    "theme": "Loss of innocence and the discovery that the world is more complex than we are told",
+    "point_of_view": "Third-person (narrator)"
+  }
+]
