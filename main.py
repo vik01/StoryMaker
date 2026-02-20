@@ -1,5 +1,8 @@
+from StoryMaker import StoryMaker
+from FantasyHelper import FantasyHelper
+
 def main():
-    print("Hello from project!")
+    pass
 
 
 if __name__ == "__main__":

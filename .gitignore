@@ -11,3 +11,4 @@ testing_area.ipynb
 __pycache__/
 *.pyc
 uv.lock
+test_outputs/

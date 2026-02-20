@@ -1,2 +1,0 @@
-class GenerateWithAI:
-    pass
