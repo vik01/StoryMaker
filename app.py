@@ -12,9 +12,8 @@ st.set_page_config(
 
 # ─── StoryHelper Instance ─────────────────────────────────────────────────────
 # @st.cache_resource creates ONE shared instance for the entire session.
-# This is intentional — when we add a generate button later, the same
-# StoryHelper object (and its underlying StoryMaker HTTP client) will be
-# reused rather than creating a new connection on every Streamlit rerun.
+# The same StoryHelper (and its underlying HTTP client) is reused on every
+# Streamlit rerun rather than creating a new object each time.
 @st.cache_resource
 def get_story_helper():
     return StoryHelper()
@@ -34,14 +33,18 @@ def load_all_prompts():
 
 @st.cache_data
 def load_all_stories():
-    """Return the full list of story type dicts via StoryHelper."""
-    return helper.get_all_helpers()
+    """Return all 10 story type dicts via StoryHelper.
+
+    get_all_helpers() requires explicit 0-based indices, so we pass the full
+    range of 10 stories (indices 0–9).
+    """
+    return helper.get_all_helpers(list(range(10)))
 
 
 system_prompts = load_all_prompts()
 story_types    = load_all_stories()
 
-# Build a quick-lookup dict so fetching a story by id is O(1).
+# Build a quick-lookup dict so fetching a story by its id is O(1).
 # e.g.  story_lookup[3]  →  the full dict for "The Tortured Genius"
 story_lookup = {story["id"]: story for story in story_types}
 
@@ -59,7 +62,8 @@ st.divider()
 # One collapsible expander per entry in story_system_prompts.json.
 for prompt in system_prompts:
 
-    expander_label = f"**{prompt['label']}**  ·  Prompt #{prompt['prompt_id']}"
+    pid            = prompt["prompt_id"]
+    expander_label = f"**{prompt['label']}**  ·  Prompt #{pid}"
 
     with st.expander(expander_label, expanded=False):
 
@@ -69,7 +73,7 @@ for prompt in system_prompts:
         st.info(prompt["best_for"])
 
         # Read-only text area keeps the full prompt readable without blowing
-        # up the page. disabled=True prevents editing.
+        # up the page height. disabled=True prevents editing.
         st.markdown("##### System Prompt")
         st.text_area(
             label="system_prompt",
@@ -93,6 +97,21 @@ for prompt in system_prompts:
                 st.warning(f"Story ID {story_id} not found in story_types.json.")
                 continue
 
+            # ── Session state keys ────────────────────────────────────────────
+            # Each prompt + story combination gets its own pair of keys so that
+            # generating one story doesn't affect the state of any other card.
+            #
+            # key_show   → bool: whether the generated story panel is visible
+            # key_result → str:  the generated story text, persists across reruns
+            key_show   = f"show_{pid}_{story_id}"
+            key_result = f"result_{pid}_{story_id}"
+
+            # Initialise session state on first render
+            if key_show not in st.session_state:
+                st.session_state[key_show] = False
+            if key_result not in st.session_state:
+                st.session_state[key_result] = ""
+
             # border=True draws a visible card outline — requires Streamlit ≥ 1.29
             with st.container(border=True):
 
@@ -100,20 +119,21 @@ for prompt in system_prompts:
 
                 # ── Left column: poster image ──────────────────────────────
                 with img_col:
-                    # get_helper_image() takes the int story_id (pads it internally)
-                    # and the protagonist name.  It returns a PIL Image on success
-                    # or an error string ("File not found." / "Cannot open the image.")
-                    # if the file is missing or unreadable.
+                    # get_helper_image() returns a PIL Image on success or an
+                    # error string if the file is missing / unreadable.
                     protagonist = story["characters"]["protagonist"]
                     img_result  = helper.get_helper_image(story_id, protagonist)
 
                     if isinstance(img_result, Image.Image):
                         st.image(img_result, use_container_width=True)
                     else:
-                        # Surface the exact error from StoryHelper so it's easy to debug
                         st.markdown(f"*Image unavailable — {img_result}*")
 
-                # ── Right column: story details (everything except id) ──────
+                # ── Right column: story details + generate button ───────────
+                # generate_clicked is declared here so it is always defined
+                # when we reach the full-width section below the columns.
+                generate_clicked = False
+
                 with info_col:
                     description = story["characters"]["description"]
 
@@ -121,7 +141,6 @@ for prompt in system_prompts:
                     st.markdown(f"*{description}*")
                     st.markdown("---")
 
-                    # Iterate over fields in display order
                     fields = [
                         ("Setting",       story["setting"]),
                         ("Plot",          story["plot"]),
@@ -133,14 +152,66 @@ for prompt in system_prompts:
                     for field_label, field_value in fields:
                         st.markdown(f"**{field_label}:** {field_value}")
 
-                    # ── Generate button placeholder ────────────────────────
-                    # This is where the generate button will go once you are
-                    # ready to wire it up. When clicked it will pass the story
-                    # data and the parent system prompt to StoryHelper, which
-                    # will call StoryMaker.generate() to build out the story.
-                    #
-                    # Example (not yet active):
-                    # if st.button("Generate Story", key=f"gen_{prompt['prompt_id']}_{story_id}"):
-                    #     with st.spinner("Generating..."):
-                    #         result = helper.generate(prompt=story["plot"])
-                    #     st.markdown(result)
+                    st.markdown("---")
+
+                    # Show the generate button only when no story is displayed.
+                    # Once a story is generated, this button is hidden and the
+                    # Close button (below) takes its place.
+                    if not st.session_state[key_show]:
+                        generate_clicked = st.button(
+                            "✍️ Generate Story",
+                            key=f"gen_{pid}_{story_id}",
+                            use_container_width=True
+                        )
+
+                # ── Full-width panel below both columns ────────────────────
+                # Rendered inside the container but outside the columns so it
+                # spans the full card width — giving the story text more room.
+
+                if generate_clicked:
+                    # st.write_stream() consumes the generate_story() generator,
+                    # renders each chunk to the page as it arrives, and returns
+                    # the complete assembled text when the stream finishes.
+                    st.divider()
+                    result = st.write_stream(
+                        helper.generate_story(
+                            prompt["system_prompt"],
+                            story["characters"]["protagonist"],
+                            story["characters"]["description"],
+                            story["setting"],
+                            story["plot"],
+                            story["conflict"],
+                            story["theme"],
+                            story["point_of_view"]
+                        )
+                    )
+                    # Persist the result so it survives the next rerun, then
+                    # rerun to replace the live stream with a stable text area.
+                    st.session_state[key_result] = result
+                    st.session_state[key_show]   = True
+                    st.rerun()
+
+                elif st.session_state[key_show]:
+                    # A story was previously generated — show it in a read-only
+                    # text area that persists across reruns via session state.
+                    st.divider()
+                    st.markdown("**Generated Story**")
+                    st.text_area(
+                        label="story_output",
+                        value=st.session_state[key_result],
+                        height=400,
+                        disabled=True,
+                        label_visibility="collapsed"
+                    )
+
+                    # Close button: clears the result panel and closes the
+                    # StoryMaker HTTP client via StoryHelper.close_instance().
+                    if st.button(
+                        "Close",
+                        key=f"close_{pid}_{story_id}",
+                        use_container_width=True
+                    ):
+                        helper.close_instance()
+                        st.session_state[key_show]   = False
+                        st.session_state[key_result] = ""
+                        st.rerun()

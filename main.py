@@ -53,8 +53,6 @@ def main():
     if args.build == "StoryMaker":
         story_maker = StoryMaker()
 
-        story_maker.turn_on_streaming()
-
         initial_story = generate_storyMaker(story_maker)
         print(initial_story)
 

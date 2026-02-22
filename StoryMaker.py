@@ -77,8 +77,7 @@ class StoryMaker:
         """
         Sends the current conversation to the model and appends the response to history.
 
-        Handles both streaming and non-streaming modes. In streaming mode, content is
-        printed to stdout in real time as it arrives.
+        Handles the non-streaming mode.
 
         Returns:
             str: The complete response text from the model.
@@ -94,32 +93,76 @@ class StoryMaker:
             temperature=self.temp
         )
 
-        if self.stream_result:
-            complete_response = ""
-
-            for chunk in response:
-                if chunk.choices[0].delta.content is not None:
-                    content = chunk.choices[0].delta.content
-                    complete_response += content
-                    print(content, end="", flush=True)
-            print()
-            
-            self.__preserve_convo.append({
-                    "role": "assistant", 
-                    "content": complete_response,
-                }
-            )
-            return complete_response
-
-        else:
-            self.__preserve_convo.append({
-                    "role": "assistant", 
-                    "content": response.choices[0].message.content,
-                }
-            )
-            return response.choices[0].message.content
+        self.__preserve_convo.append({
+                "role": "assistant", 
+                "content": response.choices[0].message.content,
+            }
+        )
+        return response.choices[0].message.content
 
         
+    def __stream_chat(self):
+        """
+        Generator version of __chat() for streaming output.
+
+        Makes the same API call as __chat() but always streams, yielding each
+        text chunk as it arrives instead of printing it. After all chunks have
+        been yielded, the complete response is appended to conversation history
+        exactly like __chat() does, keeping the history consistent.
+
+        Yields:
+            str: Individual text chunks from the model as they arrive.
+        """
+        response = self.client.chat.completions.create(
+            model=self.main_model,
+            messages=self.__preserve_convo,
+            extra_body={
+                "models": self.__fallback_models
+            },
+            max_tokens=self.max_tokens,
+            stream=True,                 # always stream in this path
+            temperature=self.temp
+        )
+
+        complete_response = ""
+        for chunk in response:
+            if chunk.choices[0].delta.content is not None:
+                content = chunk.choices[0].delta.content
+                complete_response += content
+                yield content            # send chunk to the caller
+
+        # Append the full assembled response to history once streaming is done
+        self.__preserve_convo.append({
+            "role": "assistant",
+            "content": complete_response,
+        })
+
+
+    def stream_generate(self, prompt: str = ""):
+        """
+        Generator version of generate() that yields text chunks for streaming.
+
+        Intended for use with Streamlit's st.write_stream() or any other caller
+        that consumes a generator. Creates the HTTP client on first call if it
+        does not already exist.
+
+        Args:
+            prompt (str): The story prompt to send to the model. If empty, the
+                default basic_prompt is used.
+
+        Yields:
+            str: Individual text chunks from the model as they arrive.
+        """
+        if not hasattr(self, 'client'):
+            self.__create_client()
+
+        message = {"role": "user", "content": prompt if prompt else self.basic_prompt}
+        self.__preserve_convo.append(message)
+
+        # Delegate to __stream_chat() which handles the streaming loop
+        yield from self.__stream_chat()
+
+
     def generate(self, prompt:str=""):
         """
         Generates a story from the model using a user-provided or default prompt.
@@ -138,10 +181,7 @@ class StoryMaker:
             self.__create_client()
         
         # Initialize the prompt.
-        if prompt == "":
-            message = {"role": "user", "content": self.basic_prompt}
-        else:
-            message = {"role": "user", "content": prompt}
+        message = {"role": "user", "content": prompt if prompt else self.basic_prompt}
         self.__preserve_convo.append(message)
         
         # chat with the model.
