@@ -32,9 +32,6 @@ class StoryMaker:
     init_sys_prompt = "You are a master storyteller known for bestselling and critically acclaimed novels. Your writing is cinematic, emotionally immersive, and rich with atmosphere. \
                        Show, don’t tell. Use sensory detail, internal monologue, and layered description. Build tension naturally. Characters should feel psychologically real and complex. \
                         Avoid generic phrasing, shallow description, and mechanical structure."
-    
-    # All conversations
-    __all_convo = {}
 
     def __init__(self, system_prompt:str=""):
         """
@@ -50,7 +47,7 @@ class StoryMaker:
 
         # make sure some values are set.
         self.temp = 1
-        self.max_tokens = 10000
+        self.max_tokens = 8000
         self.stream_result = False
         self.__preserve_convo = []
 

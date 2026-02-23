@@ -174,7 +174,7 @@ class StoryHelper(StoryMaker):
 
 
     def close_instance(self):
-        """Delete loaded JSON data from memory to free unused space."""
+        """Calls the close function to close the HTTP client and delete loaded JSON data from memory to free unused space."""
         self.close()
         if hasattr(self, 'helpers'):
             del self.helpers
