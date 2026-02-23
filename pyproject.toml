@@ -1,14 +1,15 @@
 [project]
 name = "project"
 version = "0.1.0"
-description = "Add your description here"
+description = "StoryMaker: Run wild with you ideas! The StoryMaker project is about using AI to build out short stories of different types ranging from fantasy to sci-fi to even more! I use OpenRouter to query the Arcee AI free model that is excellent at creative writing, story-telling, and much more!"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "matplotlib>=3.10.8",
     "numpy>=2.4.2",
     "openai>=2.21.0",
-    "pandas>=2.2.0,<3.0",
+    "pandas>=2.2.0,<3.14.3",
+    "pillow>=10.0.0",
     "python-dotenv>=1.2.1",
     "requests>=2.32.5",
     "seaborn>=0.13.2",

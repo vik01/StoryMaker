@@ -11,9 +11,32 @@ The StoryMaker project is about using AI to build out short stories of different
 
 ---
 
+## Features
+
+### Browse writing styles
+Choose from multiple AI writing styles — each one shapes the tone, voice, and structure of the generated story differently. Styles are displayed as collapsible cards so the page stays clean until you need them.
+
+![Story Reference Guide — prompt cards](outputs/images/img1.png)
+
+---
+
+### Explore story archetypes with poster art
+Each writing style is linked to a set of story archetypes. Expand any style to see its stories — every card shows a generated poster image alongside the full story brief: protagonist, setting, plot, conflict, theme, and point of view.
+
+![Story card — The Reluctant Hero](outputs/images/img2.png)
+
+---
+
+### Generate and read stories inline
+Hit **Generate Story** to stream an AI-written story directly into the card. The story persists across page interactions and can be dismissed with the **Close** button when you're done.
+
+![Generated story output](outputs/images/img3.png)
+
+---
+
 ## Getting Started
 
-This project uses [`uv`](https://docs.astral.sh/uv/) for dependency and virtual environment management.
+This project uses [`uv`](https://docs.astral.sh/uv/) for dependency and virtual environment management. **Python 3.12 or higher is required.**
 
 ### 1. Install uv
 
@@ -103,9 +126,9 @@ All dependencies are managed via `pyproject.toml` and installed with `uv sync`.
 | `openai` | >=2.21.0 | OpenAI-compatible SDK used to call the OpenRouter API |
 | `python-dotenv` | >=1.2.1 | Loads the API key from the `.env` file |
 | `streamlit` | >=1.30 | Web app framework for the interactive story browser |
-| `Pillow` | (via streamlit) | Loads and displays story poster images |
+| `Pillow` | >=10.0.0 | Loads and displays story poster images |
 | `requests` | >=2.32.5 | HTTP utilities |
-| `pandas` | >=2.2.0, <3.0 | Data handling |
+| `pandas` | >=2.2.0, <3.14.3 | Data handling |
 | `numpy` | >=2.4.2 | Numerical utilities |
 | `matplotlib` | >=3.10.8 | Plotting utilities |
 | `seaborn` | >=0.13.2 | Statistical visualisation |
