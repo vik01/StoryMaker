@@ -1,30 +1,46 @@
 from StoryMaker import StoryMaker
+from collections import namedtuple
 from PIL import Image
 import json
+from pathlib import Path
+
+# A lightweight, immutable record for a single story archetype.
+# Being a namedtuple makes StoryRecord hashable, so instances can be used
+# as dictionary keys or stored in sets — see app.py's generated_stories dict.
+StoryRecord = namedtuple(
+    'StoryRecord',
+    ['id', 'protagonist', 'description', 'setting', 'plot', 'conflict', 'theme', 'point_of_view']
+)
 
 class StoryHelper(StoryMaker):
 
     def __init__(self):
-        # Instance variables for file paths.
-        # Note: these are constants that never change between instances, so class
-        # variables would also be a valid (and slightly more memory-efficient) choice.
-        # Either approach works fine for this project.
-        self.__story_path = "story_inputs"
-        self.__image_path = f"{self.__story_path}/posters"
-        # super().__init__() is intentionally NOT called here. StoryMaker is only
-        # initialized when generate_story() is called, because we need to pass the
-        # chosen system prompt at that point rather than at construction time.
+        self.__story_path = Path("story_inputs")
+        self.__image_path = self.__story_path / "posters"
 
 
     def __load_helpers(self):
-        """Load story types from story_types.json into self.helpers."""
-        with open(f"{self.__story_path}/story_types.json") as file:
-            self.helpers = json.load(file)
+        """Load story types from story_types.json into self.helpers as StoryRecord instances."""
+        with open(self.__story_path / "story_types.json") as file:
+            raw = json.load(file)
+        self.helpers = [
+            StoryRecord(
+                id=story['id'],
+                protagonist=story['characters']['protagonist'],
+                description=story['characters']['description'],
+                setting=story['setting'],
+                plot=story['plot'],
+                conflict=story['conflict'],
+                theme=story['theme'],
+                point_of_view=story['point_of_view'],
+            )
+            for story in raw
+        ]
 
 
     def __load_system_prompts(self):
         """Load system prompts from story_system_prompts.json into self.system_prompt."""
-        with open(f"{self.__story_path}/story_system_prompts.json") as file:
+        with open(self.__story_path / "story_system_prompts.json") as file:
             self.system_prompt = json.load(file)
 
 
@@ -96,7 +112,7 @@ class StoryHelper(StoryMaker):
                 if the file is missing or cannot be read.
         """
         id = f"0{story_id}" if story_id < 10 else str(story_id)
-        image = f"{self.__image_path}/{id}_{hero_type.replace(' ', '_')}.jpg"
+        image = self.__image_path / f"{id}_{hero_type.replace(' ', '_')}.jpg"
         try:
             helper_img = Image.open(image)
             return helper_img

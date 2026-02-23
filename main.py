@@ -2,25 +2,20 @@ from StoryMaker import StoryMaker
 from StoryHelper import StoryHelper
 import argparse
 import functools
-import json
-import os
+from pathlib import Path
 
 # Global variable parser.
 parser = argparse.ArgumentParser()
 
-def ensure_files(files): 
-    story_path = files[0] + "/" + files[1]
-    history_path = files[2] + "/" + files[3]
+def ensure_files(files):
+    story_path   = Path(files[0]) / files[1]
+    history_path = Path(files[2]) / files[3]
 
-    try:
-        file = open(story_path)
-    except FileNotFoundError:
-        raise FileNotFoundError("Story file not found. Please check the path or create the story")
+    if not story_path.exists():
+        raise FileNotFoundError("Story file not found. Please check the path or create the story.")
 
-    try:
-        file = open(history_path)
-    except FileNotFoundError:
-        raise FileNotFoundError("History file not found. Please check the path or create the story")
+    if not history_path.exists():
+        raise FileNotFoundError("History file not found. Please check the path or create the story.")
 
     return story_path, history_path
 
@@ -57,7 +52,7 @@ def check_correct(question, answer):
             return False
         else:
             return True 
-    if question == "Question" or "New_Story":
+    if question == "Question" or question == "New_Story":
         if answer not in ["1", "2"]:
             return False
         else:
@@ -142,12 +137,12 @@ def main():
             conversation = close_storyMaker(story_maker, pretty=True)
             
             # story file
-            with open(story_path, "a") as f:
+            with story_path.open("a") as f:
                 f.write(initial_story)
                 f.write("")
-            
+
             # history file
-            with open(history_path, "a") as f:
+            with history_path.open("a") as f:
                 f.write(conversation)
                 f.write("")
 
