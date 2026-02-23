@@ -5,7 +5,7 @@ from PIL import Image
 # ─── Page Configuration ───────────────────────────────────────────────────────
 # Must be the first Streamlit call in the script.
 st.set_page_config(
-    page_title="Story Reference Guide",
+    page_title="StoryMaker - Run wild with your ideas!",
     page_icon="📖",
     layout="wide"
 )
@@ -50,7 +50,7 @@ story_lookup = {story["id"]: story for story in story_types}
 
 
 # ─── Page Header ──────────────────────────────────────────────────────────────
-st.title("📖 Story Reference Guide")
+st.title("📖 StoryMaker - Run wild with your ideas!")
 st.markdown(
     "Browse the available system prompts and the story types each one supports. "
     "Click any prompt card to expand it and see its linked stories."

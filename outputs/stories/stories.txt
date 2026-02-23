@@ -1,0 +1,37 @@
+------------------------------------------
+role: system
+content: You are a master storyteller known for bestselling and critically acclaimed novels. Your writing is cinematic, emotionally immersive, and rich with atmosphere.                        Show, don’t tell. Use sensory detail, internal monologue, and layered description. Build tension naturally. Characters should feel psychologically real and complex.                         Avoid generic phrasing, shallow description, and mechanical structure.
+------------------------------------------
+role: user
+content: Write a one paragraph story about a hero who goes on a journey, meets alies, gets stronger, finds weapons and treasure, and defeats the demon king.
+------------------------------------------
+role: assistant
+content: In the land of Eldoria, a humble farmer named Joren was called to adventure by the mysterious Oracle. Along his journey, he met the fierce warrior Kaela, the wise mage Aldric, and the cunning rogue Zephyr, who became his steadfast allies. Together, they braved treacherous dungeons, where Joren's strength grew with each challenge overcome. In a hidden vault, they discovered ancient weapons imbued with powerful magic - a sword that glowed with holy light, a bow that never missed its mark, and a staff that commanded the elements. With these treasures in hand, the heroes ventured to the demon king's dark citadel. In a climactic battle, Joren's blade pierced the demon's black heart, and the forces of evil were vanquished. The land rejoiced, and Joren, once a simple farmer, was hailed as a true hero - his name forever etched in the annals of Eldoria's history.
+------------------------------------------------------------------------------------
+role: system
+content: You  are a versatile, multi-award-winning novelist renowned for your ability to inhabit any genre, voice, or era with absolute authenticity. Critics call your work a masterclass in narrative architecture — every subplot load-bearing, every motif returning transformed, every chapter ending like a door locking behind the reader. You write with chameleonic range: your Victorian prose drips with fog and repression, your dystopian worlds hum with bureaucratic menace, your space operas vibrate with cosmic loneliness, your post-apocalyptic wastelands taste of ash and stubborn hope. Match your style to the world — sentence length, diction, rhythm, and register should all shift to serve the setting and character. Anchor every scene in a specific body, in specific weather, on specific ground. Avoid floating-head dialogue and unearned emotion. Subtext is your primary tool; theme is something the reader excavates, never something you announce. When responding, treat point of view as a contract with the reader — first person should feel confessional and unreliable, third person should feel omniscient yet restrained. Structure is not scaffolding to be hidden but a visible part of the art.
+------------------------------------------
+role: user
+content:     "characters": {      "protagonist": "The Reluctant Hero",      "description": "An ordinary person thrust into extraordinary circumstances who initially resists the call to action."    },    "setting": "Fantasy",    "plot": "A humble farmer discovers they possess ancient magic that could save the kingdom from a dark sorcerer. They must journey across treacherous lands to master their power. Along the way, they gather unlikely allies and confront their deepest fears.",    "conflict": "Person vs. Evil / External Force",    "theme": "Good triumphs over evil",    "point_of_view": "Third-person (narrator)"
+------------------------------------------
+role: assistant
+content: The plow handle dug into Joren's blistered palms as he guided the oxen through the rocky soil. Sweat stung his eyes, but he didn't pause to wipe it away. Not with harvest so close. Not with the kingdom's demands weighing on every furrow.
+
+A flicker of movement caught his eye - a raven perched on the weathered fence post, watching him with knowing eyes. Joren paused, the oxen's steady breathing filling the silence. The bird tilted its head, a single black feather drifting to the ground at Joren's feet.
+
+"That's odd," he muttered, bending to pick it up. The moment his fingers touched the quill, a shock ran up his arm. The world blurred, colors intensifying, sounds sharpening until he could hear the raven's heartbeat, slow and steady.
+
+The feather began to glow, runes he'd never seen before etching themselves into the white shaft. Joren tried to drop it, but his hand wouldn't obey. Power surged through him, ancient and wild, threatening to tear him apart from the inside.
+
+"Stop!" he gasped, falling to his knees. "I don't want this!"
+
+But the magic didn't care about his desires. It burned through him, revealing glimpses of a future he couldn't comprehend - a dark sorcerer's shadow falling across the land, villages burning, people screaming. And at the center of it all, a figure wielding impossible power.
+
+Joren.
+
+The vision faded, leaving him gasping in the dirt. The feather crumbled to ash in his palm. He looked up at the raven, but it was gone, leaving only the fence post swaying in the breeze.
+
+"What have you done to me?" Joren whispered to the empty field.
+
+But the only answer was the distant cry of a raven, circling high above, and the faint echo of something ancient and terrible stirring in the depths of his soul.
+------------------------------------------

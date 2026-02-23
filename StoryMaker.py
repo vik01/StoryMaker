@@ -1,5 +1,6 @@
 from dotenv import dotenv_values
 from openai import OpenAI
+import json
 
 config = dotenv_values(".env")
 open_ai_key = config["OPENROUTER_API"]
@@ -47,7 +48,7 @@ class StoryMaker:
 
         # make sure some values are set.
         self.temp = 1
-        self.max_tokens = 8000
+        self.max_tokens = 5000
         self.stream_result = False
         self.__preserve_convo = []
 
@@ -245,16 +246,6 @@ class StoryMaker:
         return result
 
 
-    def turn_off_streaming(self):
-        """Disables streaming mode. Model responses will be returned all at once."""
-        self.stream_result = False
-    
-
-    def turn_on_streaming(self):
-        """Enables streaming mode. Model responses will be printed to stdout in real time."""
-        self.stream_result = True
-
-
     def change_temperature(self, temperature):
         """
         Sets the model's temperature for response generation.
@@ -326,9 +317,13 @@ class StoryMaker:
     @classmethod
     def get_basic_prompt(cls):
         """Returns the default story prompt as a formatted string."""
-        return f"If you do not specify a story prompt, you will get the following prompt:\n {cls.basic_prompt}"
+        return f"{cls.basic_prompt}"
     
-
+    @classmethod
+    def get_default_system_prompt(cls):
+        """Returns the system prompt that is defaulted in the object."""
+        return cls.init_sys_prompt
+    
     @classmethod
     def get_fallback_model(cls):
         """Returns a numbered list of fallback models as a formatted string."""
